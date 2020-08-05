@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TankStats.Data;
+using TankStats.Data.Repositories;
 using TankStats.Helpers;
+using TankStats.Models;
+using TankStats.Services;
 
 namespace TankStats
 {
@@ -26,7 +25,15 @@ namespace TankStats
         {
             services.AddControllersWithViews();
 
-            services.AddSingleton<ApiHelper>();
+            //repo's
+            services.AddScoped<UserRepository>();
+            services.AddScoped<TankRepository>();
+            services.AddScoped<MedalRepository>();
+            services.AddScoped<StatisticsRepository>();
+
+            //services and helpers
+            services.AddScoped<ApiService>();
+            services.AddScoped<ApiHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

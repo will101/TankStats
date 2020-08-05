@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using TankStats.Helpers;
+using TankStats.Services;
 using TankStats.Models;
 using TankStats.Models.ViewModels;
 
@@ -11,20 +10,20 @@ namespace TankStats.Controllers
     public class HomeController : Controller
     {
         /** Main todo: 
-         * Add a section about tanks(players vehicles)
-         * Add a section about players achievements
          * Add a comparison feature between up to 3 players
          * Refactor front end in Angular or react
          * Refactor everything
          * Add some decent error handling in
+         * 
+         * WN8 calculations: http://forum.worldoftanks.eu/index.php?/topic/547149-wn8-formula-detailed-breakdown-stat-nerds-should-drop-by/
+         * Win rate calculations: https://www.printyourbrackets.com/winning-percentage-calculator.php#:~:text=To%20calculate%20your%20winning%20percentage,in%20decimal%20form%2C%20such%20as%20.
          * */
 
+        private ApiService _apiService;
 
-        private ApiHelper _apiHelper;
-
-        public HomeController(ApiHelper apiHelper)
+        public HomeController(ApiService apiHelper)
         {
-            _apiHelper = apiHelper;
+            _apiService = apiHelper;
         }
 
         public IActionResult Index()
@@ -38,7 +37,7 @@ namespace TankStats.Controllers
             User user = new User();
             if (!string.IsNullOrEmpty(Username))
             {
-                user = await _apiHelper.GetPersonalData(Username);
+                user = await _apiService.GetPersonalData(Username);
             }
 
             return user;
@@ -50,9 +49,10 @@ namespace TankStats.Controllers
             UserStatsViewModel stats = new UserStatsViewModel();
             if (!string.IsNullOrEmpty(AccountId))
             {
-                stats.UserStats = await _apiHelper.GetUserStats(AccountId);
-                stats.UserTanks = await _apiHelper.GetUserTanks(AccountId);
-                stats.UserMedals = await _apiHelper.GetUserMedals(AccountId);
+                //get all the data we need for the user
+                stats.UserStats = await _apiService.GetUserStats(AccountId);
+                stats.UserTanks = await _apiService.GetUserTanks(AccountId);
+                stats.UserMedals = await _apiService.GetUserMedals(AccountId);
             }
 
             return stats;
