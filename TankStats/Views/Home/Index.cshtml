@@ -1,0 +1,26 @@
+﻿<div class="text-center">
+    <h1 class="display-4">TankStats</h1>
+    <p>Find out your tank stats below.</p>
+</div>
+
+<div>
+    <form class="" onsubmit="return false; SearchPlayer()" method="post">
+        <div class="col-md-6 input-group">
+            <input type="text" id="Username" name="Username" class="form-control" placeholder="Enter your username" value="eljonez" />
+            <!--Bootstrap aligned button-->
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit" onclick="SearchPlayer()"><i class="fa fa-search"></i></button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="UserStats">
+
+</div>
+
+<h2>Tanks</h2>
+<div id="UserTanks"></div>
+
+<h2>Medals</h2>
+<div id="UserMedals"></div>
