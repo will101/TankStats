@@ -103,7 +103,7 @@ namespace TankStats.Helpers
             UserMedalsViewModel vm = new UserMedalsViewModel();
 
             //TODO: Refactor below section as it is massive!
-            /*
+            /* t
              * 
              * */
 
