@@ -342,3 +342,4 @@ healthchecksdb
 
 #ignore file with application id (api key) in it
 /TankStats/TankStats/TankConstants.cs
+/TankStats/TankConstants.cs
