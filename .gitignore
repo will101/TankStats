@@ -338,3 +338,7 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+
+#ignore file with application id (api key) in it
+/TankStats/TankStats/TankConstants.cs
