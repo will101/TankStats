@@ -19,11 +19,16 @@ namespace TankStats.Controllers
          * Win rate calculations: https://www.printyourbrackets.com/winning-percentage-calculator.php#:~:text=To%20calculate%20your%20winning%20percentage,in%20decimal%20form%2C%20such%20as%20.
          * */
 
-        private ApiService _apiService;
+        private readonly TankService _tankService;
+        private readonly MedalService _medalService;
+        private readonly UserStatisticsService _userStatisticsService;
 
-        public HomeController(ApiService apiHelper)
+
+        public HomeController(TankService tankService, MedalService medalService, UserStatisticsService userStatisticsService)
         {
-            _apiService = apiHelper;
+            _tankService = tankService;
+            _medalService = medalService;
+            _userStatisticsService = userStatisticsService;
         }
 
         public IActionResult Index()
@@ -37,7 +42,7 @@ namespace TankStats.Controllers
             User user = new User();
             if (!string.IsNullOrEmpty(Username))
             {
-                user = await _apiService.GetPersonalData(Username);
+                user = await _userStatisticsService.GetPersonalData(Username);
             }
 
             return user;
@@ -50,9 +55,9 @@ namespace TankStats.Controllers
             if (!string.IsNullOrEmpty(AccountId))
             {
                 //get all the data we need for the user
-                stats.UserStats = await _apiService.GetUserStats(AccountId);
-                stats.UserTanks = await _apiService.GetUserTanks(AccountId);
-                stats.UserMedals = await _apiService.GetUserMedals(AccountId);
+                stats.UserStats = await _userStatisticsService.GetUserStats(AccountId);
+                stats.UserTanks = await _tankService.GetUserTanks(AccountId);
+                stats.UserMedals = await _medalService.GetUserMedals(AccountId);
             }
 
             return stats;

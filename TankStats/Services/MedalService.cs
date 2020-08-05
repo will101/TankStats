@@ -1,70 +1,19 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using TankStats.Data;
 using TankStats.Data.Repositories;
 using TankStats.Extensions;
 using TankStats.Models;
 using TankStats.Models.ViewModels;
-using static TankStats.TankConstants;
-
-/** TODO:
- * Refactor medals section from line 103 to 176
- * Split apiHelper class out into more useful files if necessary
- * Add comparison for up to 3 players
- * Add win ratio and wn8 if you can find calculations for them
- * Overhaul front end with react or angular
- * */
 
 namespace TankStats.Services
 {
-    public class ApiService
+    public class MedalService
     {
-        private readonly UserRepository _userRepository;
-        private readonly TankRepository _tankRepository;
         private readonly MedalRepository _medalRepository;
-        private readonly StatisticsRepository _statisticsRepository;
 
-        public ApiService(UserRepository userRepository, StatisticsRepository statisticsRepository, TankRepository tankRepository, MedalRepository medalRepository)
+        public MedalService(MedalRepository medalRepository)
         {
-            _userRepository = userRepository;
-            _tankRepository = tankRepository;
             _medalRepository = medalRepository;
-            _statisticsRepository = statisticsRepository;
-        }
-
-
-        public async Task<User> GetPersonalData(string Username)
-        {
-            User foundUser = await _userRepository.GetPersonalData(Username);
-
-            return foundUser;
-        }
-
-        public async Task<UserStats> GetUserStats(string AccountId)
-        {
-            UserStats serializedStats = await _statisticsRepository.GetUserStats(AccountId);
-
-            All all = serializedStats.statistics.all;
-            all.MaxDamageTank = await _tankRepository.GetTankById(all.max_damage_tank_id);
-            all.MaxKillsTank = await _tankRepository.GetTankById(all.max_frags_tank_id);
-            all.MaxXpTank = await _tankRepository.GetTankById(all.max_xp_tank_id);
-
-            return serializedStats;
-        }
-
-        public async Task<List<UserTanks>> GetUserTanks(string AccountId)
-        {
-            List<UserTanks> tanks = await _tankRepository.GetUserTanks(AccountId);
-
-            //go through each tank returned and get the tank details - name and image
-            await GetTankDetails(tanks);
-
-            return tanks;
         }
 
         public async Task<UserMedalsViewModel> GetUserMedals(string AccountId)
@@ -188,18 +137,6 @@ namespace TankStats.Services
 
         }
 
-        public async Task<List<UserTanks>> GetTankDetails(List<UserTanks> UserTanks)
-        {
-            foreach (UserTanks tank in UserTanks)
-            {
-                TankDetails tankDetails = await _tankRepository.GetTankById(tank.tank_id);
-                MasteryBadgeLevels tankMastery = (MasteryBadgeLevels)tank.mark_of_mastery;
-                tank.MasteryBadgeText = FormatMedalName(tankMastery.ToString());
-                tank.tank_details = tankDetails;
-            }
-
-            return UserTanks;
-        }
 
         public string FormatMedalName(string MedalName)
         {
@@ -222,9 +159,5 @@ namespace TankStats.Services
 
             return Condition;
         }
-
-
-
-
     }
 }

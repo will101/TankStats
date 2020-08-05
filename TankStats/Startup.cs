@@ -32,7 +32,9 @@ namespace TankStats
             services.AddScoped<StatisticsRepository>();
 
             //services and helpers
-            services.AddScoped<ApiService>();
+            services.AddScoped<TankService>();
+            services.AddScoped<UserStatisticsService>();
+            services.AddScoped<MedalService>();
             services.AddScoped<ApiHelper>();
         }
 
