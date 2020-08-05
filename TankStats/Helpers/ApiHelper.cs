@@ -24,5 +24,15 @@ namespace TankStats.Helpers
 
             return jsonString;
         }
+
+
+        public enum MasteryBadgeLevels
+        {
+            None = 0,
+            ThirdClass = 1,
+            SecondClass = 2,
+            FirstClass = 3,
+            AceTanker = 4
+        }
     }
 }

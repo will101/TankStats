@@ -49,7 +49,6 @@ namespace TankStats.Services
         {
             UserStats serializedStats = await _statisticsRepository.GetUserStats(AccountId);
 
-            //add tank names in 
             All all = serializedStats.statistics.all;
             all.MaxDamageTank = await _tankRepository.GetTankById(all.max_damage_tank_id);
             all.MaxKillsTank = await _tankRepository.GetTankById(all.max_frags_tank_id);
