@@ -28,6 +28,10 @@ namespace TankStats.Data.Repositories
         public async Task<Medals> GetAllMedals()
         {
             string url = $"https://api.worldoftanks.eu/wot/encyclopedia/achievements/?application_id= {TankConstants.APPLICATION_ID}";
+
+            /*Don't need to get all the medals here, just the ones we're interested in. but this api endpoint doesn't seem to support
+            filtering like the other endpoints.*/
+
             string returnedJson = await _apiHelper.GetApiData(url);
             Medals allMedals = JsonConvert.DeserializeObject<Medals>(returnedJson);
 

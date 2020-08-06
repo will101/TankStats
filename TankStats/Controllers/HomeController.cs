@@ -1,28 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using TankStats.Services;
 using TankStats.Models;
 using TankStats.Models.ViewModels;
+using TankStats.Services;
 
 namespace TankStats.Controllers
 {
     public class HomeController : Controller
     {
-        /** Main todo: 
+        /** TODO: 
+         * Switch CSS out for SASS
          * Add a comparison feature between up to 3 players
          * Refactor front end in Angular or react
-         * Refactor everything
-         * Add some decent error handling in
-         * 
-         * WN8 calculations: http://forum.worldoftanks.eu/index.php?/topic/547149-wn8-formula-detailed-breakdown-stat-nerds-should-drop-by/
-         * Win rate calculations: https://www.printyourbrackets.com/winning-percentage-calculator.php#:~:text=To%20calculate%20your%20winning%20percentage,in%20decimal%20form%2C%20such%20as%20.
          * */
 
         private readonly TankService _tankService;
         private readonly MedalService _medalService;
         private readonly UserStatisticsService _userStatisticsService;
-
 
         public HomeController(TankService tankService, MedalService medalService, UserStatisticsService userStatisticsService)
         {
@@ -32,6 +27,11 @@ namespace TankStats.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult About()
         {
             return View();
         }

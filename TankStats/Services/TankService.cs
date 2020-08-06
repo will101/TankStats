@@ -37,7 +37,7 @@ namespace TankStats.Services
                 string masteryLevel = tankMastery.ToString(); //TODO: Add spacing in between the words. Look at method used for this for medal names? Make an extension method?
 
 
-                tank.MasteryBadgeText = masteryLevel;
+                tank.MasteryBadgeText = masteryLevel.AddSpace();
                 tank.tank_details = tankDetails;
             }
 

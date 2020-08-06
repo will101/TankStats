@@ -1,13 +1,28 @@
-﻿<div class="text-center">
-    <h1 class="display-4">TankStats</h1>
-    <p>Find out your tank stats below.</p>
+﻿<div class="row">
+    <div class="col-md-2">
+        <img class="" src="~/Images/Tog.png" title="Tog 2" alt="Small picture of a Tog 2 tank" />
+    </div>
+    <div class="col-md-2">
+        <img class="" src="~/Images/CenturionSevenOne.png" title="Centurion 7/1" alt="Small picture of a Centurion 7/1 tank" />
+    </div>
+    <div class="col-md-2">
+        <img class="" src="~/Images/Is7.png" title="IS7" alt="Small picture of an IS7 tank" />
+    </div>
+    <div class="col-md-2">
+        <img class="" src="~/Images/M48Patton.png" title="M48 Patton" alt="Small picture of an M48 patton tank" />
+    </div>
+    <div class="col-md-2">
+        <img class="" src="~/Images/T57Heavy.png" title="T57 heavy" alt="Small picture of a T57 heavy tank" />
+    </div>
 </div>
 
-<div>
+<div class="col-md-6">
+    <h1 class="display-4">Welcome to TankStats</h1>
+    <p>Find out your World of Tanks statistics below by entering your username.</p>
+
     <form class="" onsubmit="return false; SearchPlayer()" method="post">
-        <div class="col-md-6 input-group">
+        <div class="input-group">
             <input type="text" id="Username" name="Username" class="form-control" placeholder="Enter your username" value="eljonez" />
-            <!--Bootstrap aligned button-->
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit" onclick="SearchPlayer()"><i class="fa fa-search"></i></button>
             </div>
@@ -15,12 +30,7 @@
     </form>
 </div>
 
-<div id="UserStats">
-
-</div>
-
-<h2>Tanks</h2>
+<!-- Placeholders for js generated HTML-->
+<div id="UserStats"></div>
 <div id="UserTanks"></div>
-
-<h2>Medals</h2>
 <div id="UserMedals"></div>

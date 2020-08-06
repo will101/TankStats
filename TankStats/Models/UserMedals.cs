@@ -5,8 +5,6 @@ namespace TankStats.Models
     public class UserMedals
     {
         public Achievements achievements { get; set; } //Achievements earned
-        public Frags frags { get; set; } //Achievement progress
-        public MaxSeries max_series { get; set; } //Maximum values of achievement series
     }
 
     public class Achievements
@@ -74,40 +72,5 @@ namespace TankStats.Models
         public int evileye { get; set; }
         public int firstMerit { get; set; }
         public int medalKnispel { get; set; }
-    }
-
-    public class Frags
-    {
-        public int crucialShotMedal { get; set; }
-        public int prematureDetonationMedal { get; set; }
-        public int sentinelMedal { get; set; }
-        public int infiltratorMedal { get; set; }
-        public int fightingReconnaissanceMedal { get; set; }
-        public int fireAndSteelMedal { get; set; }
-        public int reliableComrade { get; set; }
-        public int wolfAmongSheepMedal { get; set; }
-        public int heavyFireMedal { get; set; }
-        public int bruteForceMedal { get; set; }
-        public int guerrillaMedal { get; set; }
-        public int promisingFighterMedal { get; set; }
-        public int pyromaniacMedal { get; set; }
-        public int geniusForWarMedal { get; set; }
-        public int sinai { get; set; }
-        public int beasthunter { get; set; }
-        public int pattonValley { get; set; }
-    }
-
-    public class MaxSeries
-    {
-        public int armorPiercer { get; set; }
-        public int titleSniper { get; set; }
-        public int tacticalBreakthrough { get; set; }
-        public int invincible { get; set; }
-        public int victoryMarch { get; set; }
-        public int deathTrack { get; set; }
-        public int EFC2016 { get; set; }
-        public int diehard { get; set; }
-        public int WFC2014 { get; set; }
-        public int handOfDeath { get; set; }
     }
 }

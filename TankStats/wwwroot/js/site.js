@@ -6,9 +6,8 @@ function SearchPlayer() {
     //get what the user typed in 
     var username = $("#Username").val();
 
-    GetUsersStats(username);
-    //display a message if we can't find the users stats, otherwise display the stats
-
+    ShowOverlay();
+    GetUsersStats(username);//display a message if we can't find the users stats, otherwise display the stats
 }
 
 function GetUsersStats(Username) {
@@ -44,6 +43,7 @@ function GetPersonalData(AccountId) {
             usefulData.trees_cut = response.userStats.statistics.trees_cut;
             usefulData.global_rating = response.userStats.global_rating;
 
+            HideOverlay();
             RenderUserStats(usefulData);
             RenderUserMedals(response.userMedals);
             RenderUserTanks(response.userTanks);
@@ -54,19 +54,18 @@ function GetPersonalData(AccountId) {
     });
 }
 
-//TODO:Try and sprinkle some react or Angular in to make all these render sections of code much cleaner
 
 function RenderUserStats(UserData) {
-    //console.log("Stats", UserData);
+    // console.log("Stats", UserData);
     var htmlString = "";
     //headline stats
-    htmlString += "<div class='row'>";
-    htmlString += "<div class='col-xs-4'>";
+    htmlString += "<div class='row PadTop10'>";
+    htmlString += "<div class='col-xs-4 padColumnSmall'>";
     htmlString += "<h2>Headline stats</h2>";
     htmlString += "<table class='table table-striped table-hover'>";
     htmlString += "<tr><td><i class='fa fa-star-half-alt'></i> Overall rating</td><td>" + UserData.global_rating + "</td></tr>";
     htmlString += "<tr><td><i class='fa fa-gamepad'></i> Battles<td>" + UserData.battles + "</td></tr>";
-    htmlString += "<tr><td><i class='fa fa-arrows-alt-v'></i> Wins/Losses</td><td>" + UserData.wins + "/" + UserData.losses + "</td></tr>";
+    htmlString += "<tr><td><i class='fa fa-arrows-alt-v'></i> Win percentage</td><td>" + UserData.win_percent + "%</td></tr>";
     htmlString += "<tr><td><i class='fa fa-user-plus'></i> Survived battles</td><td>" + UserData.survived_battles + "</td></tr>";
     htmlString += "<tr><td><i class='fa fa-star'></i> Average xp per game</td><td>" + UserData.battle_avg_xp + "</td></tr>";
     htmlString += "<tr><td><i class='fa fa-binoculars'></i> Average assisted per game</td><td>" + UserData.avg_damage_assisted + "</td></tr>";
@@ -75,16 +74,16 @@ function RenderUserStats(UserData) {
     htmlString += "</table></div>";
 
     //best stats
-    htmlString += "<div class='col-xs-4'>";
+    htmlString += "<div class='col-xs-4 padColumnSmall'>";
     htmlString += "<h2>Best stats</h2>"
     htmlString += "<table class='table table-striped table-hover'>";
     htmlString += "<tr><td> Highest Damage dealt</td><td>" + UserData.max_damage + "hp <img src='" + UserData.maxDamageTank.images.small_icon + "'></img>" + UserData.maxDamageTank.name + "</td></tr>";
-    htmlString += "<tr><td> Max kills</td><td>" + UserData.max_frags + " <img src='" + UserData.maxKillsTank.images.small_icon + "'></img>" + UserData.maxKillsTank.name + "</td></tr>";
+    htmlString += "<tr><td> Max kills</td><td>" + UserData.max_frags + " kills <img src='" + UserData.maxKillsTank.images.small_icon + "'></img>" + UserData.maxKillsTank.name + "</td></tr>";
     htmlString += "<tr><td> Highest xp game</td><td>" + UserData.max_xp + "xp <img src='" + UserData.maxXpTank.images.small_icon + "'></img>" + UserData.maxXpTank.name + "</td></tr>";
     htmlString += "</table></div>";
 
     //random stats
-    htmlString += "<div class='col-xs-4'>";
+    htmlString += "<div class='col-xs-4 padColumnSmall'>";
     htmlString += "<h2>Random stats</h2>";
     htmlString += "<table class='table table-striped table-hover'>";
     htmlString += "<tr><td><i class='fa fa-skull-crossbones'></i> Total kills</td><td>" + UserData.frags + "</td></tr>";
@@ -103,6 +102,7 @@ function RenderUserStats(UserData) {
 function RenderUserTanks(UserTanks) {
     //console.log("Tanks", UserTanks);
     var htmlString = "";
+    htmlString += "<h3 class='PadTop10'>Your top 10 most popular tanks</h3>";
     htmlString += "<table class='table table-striped table-hover'>";
     htmlString += "<tr><th>Tank</th><th>Description</th><th>Mastery Badge</th><th>Battles</th><th>Wins</th></tr>";
 
@@ -122,19 +122,30 @@ function RenderUserTanks(UserTanks) {
 }
 
 function RenderUserMedals(UserMedals) {
+    //console.log(UserMedals);
     var htmlString = "";
+    htmlString += "<h3 class='PadTop10'>Epic Medals</h3>";
     htmlString += "<table class='table table-striped table-responsive table-hover'>";
     htmlString += "<tr><th></th><th>Medal</th><th>Description</th></tr>";
 
     for (var i = 0; i < UserMedals.medalsReceived.length; i++) {
         var currentIteration = UserMedals.medalsReceived[i];
         htmlString += "<tr>";
-        htmlString += "<td><img src='" + currentIteration.medalImage + "'></img> <div id='medalsAchieved'><span class='badge badge-info text-center'>" + currentIteration.amountReceived + "</span></div></td>";
-        htmlString += "<td>" + currentIteration.medalName + "</td>";
-        htmlString += "<td>" + currentIteration.medalDescription + "<ul>" + currentIteration.medalCondition + "</ul> </td>";
+        htmlString += "<td><img src='" + currentIteration.medalInformation.image + "'></img> <div id='medalsAchieved'><span class='badge badge-info text-center'>" + currentIteration.amountReceived + "</span></div></td>";
+        htmlString += "<td>" + currentIteration.medalInformation.name + "</td>";
+        htmlString += "<td>" + currentIteration.medalInformation.description + "<ul>" + currentIteration.medalInformation.condition + "</ul> </td>";
         htmlString += "</tr>";
     }
     htmlString += "</table>";
 
     $("#UserMedals").html(htmlString);
+}
+
+
+function ShowOverlay() {
+    $("#Overlay").show();
+}
+
+function HideOverlay() {
+    $("#Overlay").hide();
 }

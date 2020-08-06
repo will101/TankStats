@@ -1,4 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.ComponentModel.Design;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TankStats.Data.Repositories;
 using TankStats.Extensions;
@@ -28,128 +31,104 @@ namespace TankStats.Services
         /// Filter the useful medals into a list.
         /// Useful medals we want to find: topgun, defender,scout,radley walters,high caliber, kamikaze, bia
         /// </summary>
-        public async Task<UserMedalsViewModel> FormatMedals(UserMedals Medals)
+        public async Task<UserMedalsViewModel> FormatMedals(UserMedals UserMedals)
         {
-
-            int brothersInArms = Medals.achievements.medalBrothersInArms;
-            int defender = Medals.achievements.defender;
-            int scout = Medals.achievements.scout;
-            int radWalters = Medals.achievements.medalRadleyWalters;
-            int highCalibre = Medals.achievements.mainGun;
-            int topgun = Medals.achievements.warrior;
-            int confederate = Medals.achievements.supporter;
-            int kolobanovs = Medals.achievements.medalKolobanov;
-            int fighter = Medals.achievements.fighter;
-            int duelist = Medals.achievements.duelist;
-
-
             Medals allMedals = await _medalRepository.GetAllMedals();
             UserMedalsViewModel vm = new UserMedalsViewModel();
 
-            //TODO: Refactor below section as it is massive!
-            /* 
-             * 
-             * */
+            //go through each property and figure out which medal it is, based on its name
+            foreach (PropertyInfo prop in UserMedals.achievements.GetType().GetProperties())
+            {
+                int amountRecieved;
+                MedalInformation medalInfo;
+                string propertyName = prop.Name.ToLower();
 
-
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = brothersInArms,
-                MedalCondition = FormatMedalCondition(allMedals.MedalBrothersInArms.condition),
-                MedalDescription = allMedals.MedalBrothersInArms.description,
-                MedalImage = allMedals.MedalBrothersInArms.image,
-                MedalName = FormatMedalName(allMedals.MedalBrothersInArms.name)
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = defender,
-                MedalCondition = FormatMedalCondition(allMedals.Defender.condition),
-                MedalDescription = allMedals.Defender.description,
-                MedalImage = allMedals.Defender.image,
-                MedalName = FormatMedalName(allMedals.Defender.name)
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = scout,
-                MedalCondition = FormatMedalCondition(allMedals.Scout.condition),
-                MedalDescription = allMedals.Scout.description,
-                MedalImage = allMedals.Scout.image,
-                MedalName = FormatMedalName(allMedals.Scout.name)
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = radWalters,
-                MedalCondition = FormatMedalCondition(allMedals.MedalRadleyWalters.condition),
-                MedalDescription = allMedals.MedalRadleyWalters.description,
-                MedalImage = allMedals.MedalRadleyWalters.image,
-                MedalName = FormatMedalName(allMedals.MedalRadleyWalters.name)
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = highCalibre,
-                MedalCondition = FormatMedalCondition(allMedals.HighCalibre.condition),
-                MedalDescription = allMedals.HighCalibre.description,
-                MedalImage = allMedals.HighCalibre.image,
-                MedalName = "High calibre"
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = topgun,
-                MedalCondition = FormatMedalCondition(allMedals.TopGun.condition),
-                MedalDescription = allMedals.TopGun.description,
-                MedalImage = allMedals.TopGun.image,
-                MedalName = "Top gun"
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = confederate,
-                MedalCondition = FormatMedalCondition(allMedals.Confederate.condition),
-                MedalDescription = allMedals.Confederate.description,
-                MedalImage = allMedals.Confederate.image,
-                MedalName = "Confederate"
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = kolobanovs,
-                MedalCondition = FormatMedalCondition(allMedals.Kolobanovs.condition),
-                MedalDescription = allMedals.Kolobanovs.description,
-                MedalImage = allMedals.Kolobanovs.image,
-                MedalName = FormatMedalName(allMedals.Kolobanovs.name)
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = fighter,
-                MedalCondition = FormatMedalCondition(allMedals.Fighter.condition),
-                MedalDescription = allMedals.Fighter.description,
-                MedalImage = allMedals.Fighter.image,
-                MedalName = FormatMedalName(allMedals.Fighter.name)
-            });
-            vm.MedalsReceived.Add(new UserMedalsReceived()
-            {
-                AmountReceived = duelist,
-                MedalCondition = FormatMedalCondition(allMedals.Duelist.condition),
-                MedalDescription = allMedals.Duelist.description,
-                MedalImage = allMedals.Duelist.image,
-                MedalName = FormatMedalName(allMedals.Duelist.name)
-            });
+                /*Here we have match the number of medals achieved up with the medal information. Have to do to this with a switch at the moment but ideally would like to change this to be different.
+                The reason we have to do it in a switch is because some of the medal names are called something different in the api*/
+                switch (propertyName)
+                {
+                    case "medalbrothersinarms":
+                        amountRecieved = UserMedals.achievements.medalBrothersInArms;
+                        medalInfo = FormatMedal(allMedals.MedalBrothersInArms);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "defender":
+                        amountRecieved = UserMedals.achievements.defender;
+                        medalInfo = FormatMedal(allMedals.Defender);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "scout":
+                        amountRecieved = UserMedals.achievements.scout;
+                        medalInfo = FormatMedal(allMedals.Scout);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "medalradleywalters":
+                        amountRecieved = UserMedals.achievements.medalRadleyWalters;
+                        medalInfo = FormatMedal(allMedals.MedalRadleyWalters);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "maingun": //this medal is called high calibre in the game
+                        amountRecieved = UserMedals.achievements.mainGun;
+                        medalInfo = FormatMedal(allMedals.HighCalibre);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "warrior": //this medal is called topgun in the game
+                        amountRecieved = UserMedals.achievements.warrior;
+                        medalInfo = FormatMedal(allMedals.TopGun);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "supporter": //this medal is called confederate in the game
+                        amountRecieved = UserMedals.achievements.supporter;
+                        medalInfo = FormatMedal(allMedals.Confederate);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "medalkolobanov":
+                        amountRecieved = UserMedals.achievements.medalKolobanov;
+                        medalInfo = FormatMedal(allMedals.Kolobanovs);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "fighter":
+                        amountRecieved = UserMedals.achievements.fighter;
+                        medalInfo = FormatMedal(allMedals.Fighter);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    case "duelist":
+                        amountRecieved = UserMedals.achievements.duelist;
+                        medalInfo = FormatMedal(allMedals.Duelist);
+                        AddMedalToViewModel(vm, amountRecieved, medalInfo);
+                        break;
+                    default:
+                        //it hasn't found any of the medals
+                        break;
+                }
+            }
 
             return vm;
-
         }
 
 
-        public string FormatMedalName(string MedalName)
+        public void AddMedalToViewModel(UserMedalsViewModel Vm, int AmountRecieved, MedalInformation MedalInfo)
         {
-            string formattedName = MedalName;
+            Vm.MedalsReceived.Add(new UserMedalsReceived()
+            {
+                AmountReceived = AmountRecieved,
+                MedalInformation = MedalInfo
+            });
+        }
+
+        public MedalInformation FormatMedal(MedalInformation MedalInfo)
+        {
+            string formattedName = MedalInfo.name;
 
             formattedName = formattedName.FirstCharToUpper();
             formattedName = formattedName.Replace("Medal", "");
+            formattedName = formattedName.AddSpace();
 
+            string condition = FormatMedalCondition(MedalInfo.condition);
+            MedalInfo.condition = condition;
+            MedalInfo.name = formattedName;
 
-            //before each capital letter, add a space
-            string capitalizedCorrectly = Regex.Replace(formattedName, "([a-z])([A-Z])", "$1 $2");
-
-            return capitalizedCorrectly;
+            return MedalInfo;
         }
 
         public string FormatMedalCondition(string Condition)

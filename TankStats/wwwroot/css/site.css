@@ -76,5 +76,37 @@ body {
 #medalsAchieved {
     margin: auto;
     width: 50%;
-    font-size:17px;
+    font-size: 17px;
+}
+
+.padColumnSmall {
+    padding: 3px;
+}
+
+/* Overlay*/
+#Overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.9);
+    cursor: pointer;
+    z-index:3;
+}
+
+#OverlayText {
+    font-size: 30px;
+    color: #fff;
+    margin:auto;
+    width:50%;
+   padding-top:400px;
+    
+}
+
+.PadTop10 {
+    padding-top: 10px;
 }

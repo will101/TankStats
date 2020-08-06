@@ -1,2 +1,0 @@
-﻿#ignore file with application id (api key) in it
-/TankStats/TankConstants.cs

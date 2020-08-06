@@ -104,6 +104,7 @@
         public int shots { get; set; }
         public int explosion_hits_received { get; set; }
         public float tanking_factor { get; set; }
+        public decimal win_percent { get; set; }
     }
 
     public class Regular_Team
