@@ -10,6 +10,7 @@ namespace TankStats.Controllers
     public class HomeController : Controller
     {
         /** TODO: 
+         * Add the different regions in (when searching for players), as its only looking at EU for the moment
          * Display all tanks the user has played, add some pagination and filters/search to make this easier
          * Switch CSS out for SASS
          * Add a comparison feature between up to 3 players
