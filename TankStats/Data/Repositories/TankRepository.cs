@@ -18,18 +18,20 @@ namespace TankStats.Data.Repositories
 
         public async Task<List<UserTanks>> GetUserTanks(string AccountId)
         {
+            //the api doesn't allow adding a filter to only return the users top 10 most popular tanks
             string url = $"https://api.worldoftanks.eu/wot/account/tanks/?application_id= {TankConstants.APPLICATION_ID}&account_id= {AccountId}";
             string returnedJson = await _apiHelper.GetApiData(url);
 
             List<UserTanks> tanks = JObject.Parse(returnedJson).SelectToken(AccountId).ToObject<List<UserTanks>>();
-            tanks = tanks.OrderByDescending(t => t.statistics.battles).Take(10).ToList(); //get the top 15 to start with
+            tanks = tanks.OrderByDescending(t => t.statistics.battles).Take(10).ToList(); //get the top 10 to start with
 
             return tanks;
-        }   
+        }
 
         public async Task<TankDetails> GetTankById(int TankId)
         {
-            string url = $"https://api.worldoftanks.eu/wot/encyclopedia/vehicles/?application_id= {APPLICATION_ID}&tank_id={TankId}";
+            string filter = "name,description,images";
+            string url = $"https://api.worldoftanks.eu/wot/encyclopedia/vehicles/?application_id= {APPLICATION_ID}&tank_id={TankId}&fields={filter}";
             string returnedJson = await _apiHelper.GetApiData(url);
             TankDetails tankDetails = JObject.Parse(returnedJson).SelectToken(TankId.ToString()).ToObject<TankDetails>();
 

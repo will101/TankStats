@@ -9,7 +9,6 @@ namespace TankStats.Services
 {
     public class TankService
     {
-
         private readonly TankRepository _tankRepository;
 
         public TankService(TankRepository tankRepository)
@@ -17,24 +16,27 @@ namespace TankStats.Services
             _tankRepository = tankRepository;
         }
 
+        /// <summary>
+        /// Gets all the users tanks and then filters them to the users top 10 most popular tanks
+        /// </summary>
         public async Task<List<UserTanks>> GetUserTanks(string AccountId)
         {
             List<UserTanks> tanks = await _tankRepository.GetUserTanks(AccountId);
-
-            //go through each tank returned and get the tank details - name and image
             await GetTankDetails(tanks);
 
             return tanks;
         }
 
-
+        /// <summary>
+        /// Goes through each tank and gets the details about it e.g.name, history, nation
+        /// </summary>
         public async Task<List<UserTanks>> GetTankDetails(List<UserTanks> UserTanks)
         {
             foreach (UserTanks tank in UserTanks)
             {
                 TankDetails tankDetails = await _tankRepository.GetTankById(tank.tank_id);
                 MasteryBadgeLevels tankMastery = (MasteryBadgeLevels)tank.mark_of_mastery;
-                string masteryLevel = tankMastery.ToString(); //TODO: Add spacing in between the words. Look at method used for this for medal names? Make an extension method?
+                string masteryLevel = tankMastery.ToString();
 
 
                 tank.MasteryBadgeText = masteryLevel.AddSpace();

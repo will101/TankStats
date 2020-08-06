@@ -20,11 +20,11 @@
     <h1 class="display-4">Welcome to TankStats</h1>
     <p>Find out your World of Tanks statistics below by entering your username.</p>
 
-    <form class="" onsubmit="return false; SearchPlayer()" method="post">
+    <form class="" onsubmit="return false; searchPlayer()" method="post">
         <div class="input-group">
-            <input type="text" id="Username" name="Username" class="form-control" placeholder="Enter your username" value="eljonez" />
+            <input type="text" id="Username" name="Username" class="form-control" placeholder="Enter your username" />
             <div class="input-group-append">
-                <button class="btn btn-primary" type="submit" onclick="SearchPlayer()"><i class="fa fa-search"></i></button>
+                <button class="btn btn-primary" type="submit" onclick="searchPlayer()"><i class="fa fa-search"></i></button>
             </div>
         </div>
     </form>
@@ -34,3 +34,4 @@
 <div id="UserStats"></div>
 <div id="UserTanks"></div>
 <div id="UserMedals"></div>
+<div class="padTop10 hidden alert alert-warning" id="ApiErrors"></div>

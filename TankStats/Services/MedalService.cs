@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Reflection;
-using System.Text.RegularExpressions;
+﻿using System.Reflection;
 using System.Threading.Tasks;
 using TankStats.Data.Repositories;
 using TankStats.Extensions;
@@ -28,8 +25,7 @@ namespace TankStats.Services
         }
 
         /// <summary>
-        /// Filter the useful medals into a list.
-        /// Useful medals we want to find: topgun, defender,scout,radley walters,high caliber, kamikaze, bia
+        /// Filter the useful/epic medals into a list.
         /// </summary>
         public async Task<UserMedalsViewModel> FormatMedals(UserMedals UserMedals)
         {
@@ -43,7 +39,7 @@ namespace TankStats.Services
                 MedalInformation medalInfo;
                 string propertyName = prop.Name.ToLower();
 
-                /*Here we have match the number of medals achieved up with the medal information. Have to do to this with a switch at the moment but ideally would like to change this to be different.
+                /*Here we have to match the number of medals achieved up with the medal information. Have to do to this with a switch at the moment but ideally would like to change this to be different.
                 The reason we have to do it in a switch is because some of the medal names are called something different in the api*/
                 switch (propertyName)
                 {
@@ -116,13 +112,32 @@ namespace TankStats.Services
             });
         }
 
+        /// <summary>
+        /// Make sure the first character is uppercase, remove the word medal and add a space for words like FirstClass so they become First Class
+        /// </summary>
         public MedalInformation FormatMedal(MedalInformation MedalInfo)
         {
             string formattedName = MedalInfo.name;
 
-            formattedName = formattedName.FirstCharToUpper();
-            formattedName = formattedName.Replace("Medal", "");
-            formattedName = formattedName.AddSpace();
+            //these 3 medals have different names in the api
+            if (formattedName.Contains("warrior"))
+            {
+                formattedName = "Top Gun";
+            }
+            else if (formattedName.Contains("main"))
+            {
+                formattedName = "High Calibre";
+            }
+            else if (formattedName.Contains("supporter"))
+            {
+                formattedName = "Confederate";
+            }
+            else
+            {
+                formattedName = formattedName.FirstCharToUpper();
+                formattedName = formattedName.Replace("Medal", "");
+                formattedName = formattedName.AddSpace();
+            }
 
             string condition = FormatMedalCondition(MedalInfo.condition);
             MedalInfo.condition = condition;
@@ -131,6 +146,9 @@ namespace TankStats.Services
             return MedalInfo;
         }
 
+        /// <summary>
+        /// Replaces the bullet points from the api with html bullet points
+        /// </summary>
         public string FormatMedalCondition(string Condition)
         {
             Condition = Condition.Replace("•", "<li>");

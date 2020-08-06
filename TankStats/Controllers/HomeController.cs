@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TankStats.Models;
 using TankStats.Models.ViewModels;
@@ -10,9 +10,11 @@ namespace TankStats.Controllers
     public class HomeController : Controller
     {
         /** TODO: 
+         * Display all tanks the user has played, add some pagination and filters/search to make this easier
          * Switch CSS out for SASS
          * Add a comparison feature between up to 3 players
-         * Refactor front end in Angular or react
+         * Replace front end with an Angular or react UI
+         * Add a database to log errors
          * */
 
         private readonly TankService _tankService;
@@ -31,11 +33,9 @@ namespace TankStats.Controllers
             return View();
         }
 
-        public IActionResult About()
-        {
-            return View();
-        }
-
+        /// <summary>
+        /// Called by some JavaScript to get users info
+        /// </summary>
         [HttpGet]
         public async Task<User> GetUser(string Username)
         {
@@ -48,6 +48,9 @@ namespace TankStats.Controllers
             return user;
         }
 
+        /// <summary>
+        /// Called by some JavaScript to get users stats
+        /// </summary>
         [HttpGet]
         public async Task<UserStatsViewModel> GetUserStats(string AccountId)
         {
@@ -67,7 +70,33 @@ namespace TankStats.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            int httpStatusCode = HttpContext.Response.StatusCode;
+            IExceptionHandlerFeature exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            string errorMessage = exceptionHandlerPathFeature.Error.Message;
+
+            //redirect to an error page
+            switch (httpStatusCode)
+            {
+                case 404:
+                    return RedirectToAction("PageNotFound");
+                default:
+                    return RedirectToAction("ServerError");
+            }
+        }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult PageNotFound()
+        {
+            return View();
+        }
+
+        public IActionResult ServerError()
+        {
+            return View();
         }
     }
 }

@@ -23,6 +23,5 @@ namespace TankStats.Extensions
         {
             return Regex.Replace(Input, "([a-z])([A-Z])", "$1 $2");
         }
-
     }
 }

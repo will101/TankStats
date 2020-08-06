@@ -8,7 +8,7 @@ namespace TankStats.Models
         public defender Defender { get; set; }
         public scout Scout { get; set; }
         public medalRadleyWalters MedalRadleyWalters { get; set; }
-        
+
         [JsonProperty("maingun")]
         public mainGun HighCalibre { get; set; }
 

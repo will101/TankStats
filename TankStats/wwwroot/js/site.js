@@ -1,65 +1,68 @@
-﻿/**
- * Search for the player using the wot api, and then return their stats. We'll then use some new bootstrap 4 components 
- * to display the data in a cool way
- * */
-function SearchPlayer() {
-    //get what the user typed in 
+﻿/*handles the form submit for the search box*/
+function searchPlayer() {
     var username = $("#Username").val();
-
-    ShowOverlay();
-    GetUsersStats(username);//display a message if we can't find the users stats, otherwise display the stats
+    clearData();
+    showOverlay();
+    getUsersStats(username);
 }
 
-function GetUsersStats(Username) {
+/**Searches for the player that the user has entered into the form */
+function getUsersStats(Username) {
     Username = Username.toLowerCase();
-    var accountId;
     $.ajax({
         url: "/Home/GetUser?Username=" + Username,
         method: "GET",
         success: function (response) {
-            if (response.data !== null) {
-                accountId = response.account_id;
-
-                //now we need to get some stats from them
-                GetPersonalData(accountId);
+            if (response !== null && response !== void (response)) {
+                getPersonalData(response.account_id); //now we need to get some stats from them
+            }
+            else {
+                showErrorMessage("An error occured whilst trying to find this user. Please make sure you typed a valid username in from the EU server");
             }
         },
         error: function (err) {
-            console.log(err);
-            //TODO: Handle errors nicely
+            showErrorMessage("An error occured whilst trying to find this user. Please make sure you typed a valid username in from the EU server", err);
         }
     });
 }
 
-//TODO: add async functions to make this code ALOT cleaner
-function GetPersonalData(AccountId) {
+/**
+ * Does the api call to get the user stats and then calls the render methods
+ */
+function getPersonalData(AccountId) {
     $.ajax({
         url: "/Home/GetUserStats?AccountId=" + AccountId,
         method: "GET",
         success: function (response) {
-            // console.log(response);
+            if (response !== null && response !== void (response)) {
+                console.log(response);
+                var usefulData = response.userStats.statistics.all;
+                usefulData.trees_cut = response.userStats.statistics.trees_cut;
+                usefulData.global_rating = response.userStats.global_rating;
 
-            var usefulData = response.userStats.statistics.all;
-            usefulData.trees_cut = response.userStats.statistics.trees_cut;
-            usefulData.global_rating = response.userStats.global_rating;
-
-            HideOverlay();
-            RenderUserStats(usefulData);
-            RenderUserMedals(response.userMedals);
-            RenderUserTanks(response.userTanks);
+                hideOverlay();
+                renderUserStats(usefulData);
+                renderUserMedals(response.userMedals);
+                renderUserTanks(response.userTanks);
+            }
+            else {
+                showErrorMessage("An error occured getting this users statistics. Please make sure you entered a valid username for a player on the eu server");
+            }
         },
         error: function (err) {
-            console.log(err);
+            showErrorMessage("An error occured getting this users statistics. Please make sure you entered a valid username for a player on the eu server", err);
         }
     });
 }
 
-
-function RenderUserStats(UserData) {
+/**
+ * Builds the HTML for the top 3 columns of the webpage
+ */
+function renderUserStats(UserData) {
     // console.log("Stats", UserData);
     var htmlString = "";
     //headline stats
-    htmlString += "<div class='row PadTop10'>";
+    htmlString += " <div class='row padTop10 ellipsis'>";
     htmlString += "<div class='col-xs-4 padColumnSmall'>";
     htmlString += "<h2>Headline stats</h2>";
     htmlString += "<table class='table table-striped table-hover'>";
@@ -77,9 +80,9 @@ function RenderUserStats(UserData) {
     htmlString += "<div class='col-xs-4 padColumnSmall'>";
     htmlString += "<h2>Best stats</h2>"
     htmlString += "<table class='table table-striped table-hover'>";
-    htmlString += "<tr><td> Highest Damage dealt</td><td>" + UserData.max_damage + "hp <img src='" + UserData.maxDamageTank.images.small_icon + "'></img>" + UserData.maxDamageTank.name + "</td></tr>";
-    htmlString += "<tr><td> Max kills</td><td>" + UserData.max_frags + " kills <img src='" + UserData.maxKillsTank.images.small_icon + "'></img>" + UserData.maxKillsTank.name + "</td></tr>";
-    htmlString += "<tr><td> Highest xp game</td><td>" + UserData.max_xp + "xp <img src='" + UserData.maxXpTank.images.small_icon + "'></img>" + UserData.maxXpTank.name + "</td></tr>";
+    htmlString += "<tr><td> Highest Damage dealt</td><td>" + UserData.max_damage + "hp <img title='" + UserData.maxDamageTank.name + "' class='tankStatImg' src='" + UserData.maxDamageTank.images.small_icon + "'></img></td></tr>";
+    htmlString += "<tr><td> Max kills</td><td>" + UserData.max_frags + " kills <img title='" + UserData.maxKillsTank.name + "' class='tankStatImg' src='" + UserData.maxKillsTank.images.small_icon + "'></img></td></tr>";
+    htmlString += "<tr><td> Highest xp game</td><td>" + UserData.max_xp + "xp <img title='" + UserData.maxXpTank.name + "' class='tankStatImg' src='" + UserData.maxXpTank.images.small_icon + "'></img></td></tr>";
     htmlString += "</table></div>";
 
     //random stats
@@ -99,10 +102,13 @@ function RenderUserStats(UserData) {
     $("#UserStats").html(htmlString);
 }
 
-function RenderUserTanks(UserTanks) {
+/**
+ * Builds the HTML for the 'your top 10 most popular tanks' section of the webpage
+ */
+function renderUserTanks(UserTanks) {
     //console.log("Tanks", UserTanks);
     var htmlString = "";
-    htmlString += "<h3 class='PadTop10'>Your top 10 most popular tanks</h3>";
+    htmlString += "<h3 class='padTop10'>Your top 10 most popular tanks</h3>";
     htmlString += "<table class='table table-striped table-hover'>";
     htmlString += "<tr><th>Tank</th><th>Description</th><th>Mastery Badge</th><th>Battles</th><th>Wins</th></tr>";
 
@@ -115,23 +121,25 @@ function RenderUserTanks(UserTanks) {
         htmlString += "<td>" + UserTanks[i].statistics.wins + "</td>";
         htmlString += "</tr>";
     }
-
     htmlString += "</table>";
 
     $("#UserTanks").html(htmlString);
 }
 
-function RenderUserMedals(UserMedals) {
+/**
+ * Builds the HTML for the medals section of the webpage
+ */
+function renderUserMedals(UserMedals) {
     //console.log(UserMedals);
     var htmlString = "";
-    htmlString += "<h3 class='PadTop10'>Epic Medals</h3>";
+    htmlString += "<h3 class='padTop10'>Epic Medals</h3>";
     htmlString += "<table class='table table-striped table-responsive table-hover'>";
     htmlString += "<tr><th></th><th>Medal</th><th>Description</th></tr>";
 
     for (var i = 0; i < UserMedals.medalsReceived.length; i++) {
         var currentIteration = UserMedals.medalsReceived[i];
         htmlString += "<tr>";
-        htmlString += "<td><img src='" + currentIteration.medalInformation.image + "'></img> <div id='medalsAchieved'><span class='badge badge-info text-center'>" + currentIteration.amountReceived + "</span></div></td>";
+        htmlString += "<td><img src='" + currentIteration.medalInformation.image + "'></img> <div id='MedalsAchieved'><span class='badge badge-info text-center'>" + currentIteration.amountReceived + "</span></div></td>";
         htmlString += "<td>" + currentIteration.medalInformation.name + "</td>";
         htmlString += "<td>" + currentIteration.medalInformation.description + "<ul>" + currentIteration.medalInformation.condition + "</ul> </td>";
         htmlString += "</tr>";
@@ -142,10 +150,20 @@ function RenderUserMedals(UserMedals) {
 }
 
 
-function ShowOverlay() {
+function showOverlay() {
     $("#Overlay").show();
 }
 
-function HideOverlay() {
+function hideOverlay() {
     $("#Overlay").hide();
+}
+
+function showErrorMessage(ErrorMessage, err) {
+    console.log("Error ", err);
+    $("#ApiErrors").append(ErrorMessage).show();
+    hideOverlay();
+}
+
+function clearData() {
+    $("#UserStats, #UserTanks, #UserMedals, #ApiErrors").empty();
 }
