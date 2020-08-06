@@ -5,7 +5,7 @@ Example usernames to try: Eljonez, Oodjr, Danf121
 
 
 To get this website working:
-1) Sign up for Wargaming account: *Link here*
+1) Sign up for Wargaming account: https://eu.wargaming.net/registration/en/
 2) Add new application: https://developers.wargaming.net/applications/
 3) Type the application name ,select the server option and then add your IP address
 4) Now on the applications page it will show your application with an ID below it. Copy this ID.
