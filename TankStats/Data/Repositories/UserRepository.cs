@@ -19,7 +19,7 @@ namespace TankStats.Data
 
         public async Task<User> GetPersonalData(string Username)
         {
-            string url = $"https://api.worldoftanks.eu/wot/account/list/?application_id= {TankConstants.APPLICATION_ID}&search={Username}";
+            string url = $"https://api.worldoftanks.{TankConstants.PLAYER_SERVER}/wot/account/list/?application_id={TankConstants.APPLICATION_ID}&search={Username}";
             string returnedJson = await _apiHelper.GetApiData(url);
 
             //serialize the json into the object we want

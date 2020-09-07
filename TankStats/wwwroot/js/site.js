@@ -1,27 +1,28 @@
 ﻿/*handles the form submit for the search box*/
 function searchPlayer() {
     var username = $("#Username").val();
+    var server = $("#Server").val();
     clearData();
     showOverlay();
-    getUsersStats(username);
+    getUsersStats(username, server);
 }
 
 /**Searches for the player that the user has entered into the form */
-function getUsersStats(Username) {
+function getUsersStats(Username, Server) {
     Username = Username.toLowerCase();
     $.ajax({
-        url: "/Home/GetUser?Username=" + Username,
+        url: "/Home/GetUser?Username=" + Username + "&Server=" + Server,
         method: "GET",
         success: function (response) {
             if (response !== null && response !== void (response)) {
                 getPersonalData(response.account_id); //now we need to get some stats from them
             }
             else {
-                showErrorMessage("An error occured whilst trying to find this user. Please make sure you typed a valid username in from the EU server");
+                showErrorMessage("An error occured whilst trying to find this user. Please make sure you typed a valid username in from the " + Server + " server");
             }
         },
         error: function (err) {
-            showErrorMessage("An error occured whilst trying to find this user. Please make sure you typed a valid username in from the EU server", err);
+            showErrorMessage("An error occured whilst trying to find this user. Please make sure you typed a valid username in from the " + Server + " server", err);
         }
     });
 }
@@ -30,6 +31,7 @@ function getUsersStats(Username) {
  * Does the api call to get the user stats and then calls the render methods
  */
 function getPersonalData(AccountId) {
+    var server = $("#Server").val();
     $.ajax({
         url: "/Home/GetUserStats?AccountId=" + AccountId,
         method: "GET",
@@ -46,11 +48,11 @@ function getPersonalData(AccountId) {
                 renderUserTanks(response.userTanks);
             }
             else {
-                showErrorMessage("An error occured getting this users statistics. Please make sure you entered a valid username for a player on the eu server");
+                showErrorMessage("An error occured getting this users statistics. Please make sure you entered a valid username for a player on the "+ server  +" server");
             }
         },
         error: function (err) {
-            showErrorMessage("An error occured getting this users statistics. Please make sure you entered a valid username for a player on the eu server", err);
+            showErrorMessage("An error occured getting this users statistics. Please make sure you entered a valid username for a player on the " + server +" server", err);
         }
     });
 }

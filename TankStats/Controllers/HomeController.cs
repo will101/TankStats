@@ -10,7 +10,7 @@ namespace TankStats.Controllers
     public class HomeController : Controller
     {
         /** TODO: 
-         * Add the different regions in (when searching for players), as its only looking at EU for the moment
+         * Work on speed. Can be quite slow when switching servers e.g. from eu, to na. Use Taugrim for NA
          * Display all tanks the user has played, add some pagination and filters/search to make this easier
          * Switch CSS out for SASS
          * Add a comparison feature between up to 3 players
@@ -38,12 +38,12 @@ namespace TankStats.Controllers
         /// Called by some JavaScript to get users info
         /// </summary>
         [HttpGet]
-        public async Task<User> GetUser(string Username)
+        public async Task<User> GetUser(string Username, string Server)
         {
             User user = new User();
             if (!string.IsNullOrEmpty(Username))
             {
-                user = await _userStatisticsService.GetPersonalData(Username);
+                user = await _userStatisticsService.GetPersonalData(Username, Server);
             }
 
             return user;

@@ -22,7 +22,7 @@ namespace TankStats.Data.Repositories
                 $"{stats}.hits_percents,{stats}.max_xp_tank_id,{stats}.battles,{stats}.avg_damage_assisted,{stats}.max_frags_tank_id,{stats}.frags,{stats}.max_damage,{stats}.battle_avg_xp," +
                 $"{stats}.wins,{stats}.losses,{stats}.damage_dealt,{stats}.explosion_hits_received,{stats}.max_frags,{stats}.damage_received,{stats}.spotted,{stats}.shots";
 
-            string url = $"https://api.worldoftanks.eu/wot/account/info/?application_id= {TankConstants.APPLICATION_ID}&account_id= {AccountId}&fields={fieldList}";
+            string url = $"https://api.worldoftanks.{TankConstants.PLAYER_SERVER}/wot/account/info/?application_id= {TankConstants.APPLICATION_ID}&account_id= {AccountId}&fields={fieldList}";
             string returnedJson = await _apiHelper.GetApiData(url);
 
             /*the returned json has a top level node of the accountId, which needs to be expanded to access the rest of the data.

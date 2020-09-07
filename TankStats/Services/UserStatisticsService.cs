@@ -22,8 +22,23 @@ namespace TankStats.Services
         /// <summary>
         /// Search for the user in the world of tanks api, this then returns their account id which we need for the rest of the api calls
         /// </summary>
-        public async Task<User> GetPersonalData(string Username)
+        public async Task<User> GetPersonalData(string Username, string Server)
         {
+            //set server globally
+            switch (Server)
+            {
+                case "NA":
+                    Server = "com";
+                    break;
+                case "SA":
+                    Server = "asia";
+                        break;
+                default:
+                    Server = Server.ToLower();
+                    break;
+            }
+            TankConstants.PLAYER_SERVER = Server;
+
             User foundUser = await _userRepository.GetPersonalData(Username);
 
             return foundUser;
@@ -51,5 +66,5 @@ namespace TankStats.Services
 
             return rounded;
         }
-    }
+     }
 }
